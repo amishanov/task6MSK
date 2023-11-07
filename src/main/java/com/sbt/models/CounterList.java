@@ -1,6 +1,7 @@
 package com.sbt.models;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Set;
 //TODO документирование
 @Service
 @Getter
+@NoArgsConstructor
 public class CounterList {
     //TODO Заменить на Atomic?
     private static final HashMap<String, Integer> counterList = new HashMap<>();
@@ -40,7 +42,6 @@ public class CounterList {
         return false;
     }
 
-    //TODO протестировать отсутствие элементов
     public Long getSum() {
         if (counterList.size() == 0)
             return -1L;
@@ -49,5 +50,10 @@ public class CounterList {
 
     public Set<String> getNames() {
         return counterList.keySet();
+    }
+
+    // Method for tests
+    public void clearAll() {
+        counterList.clear();
     }
 }

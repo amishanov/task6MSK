@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/counter")
+//@RequestMapping("/counters")
 public class CounterController {
     final CounterList counterList;
 
@@ -38,7 +38,7 @@ public class CounterController {
                     .body(String.format("Что-то пошло не так. Возможно счётчик %s не представлен в системе", name));
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/counters/{name}")
     public ResponseEntity<String> getCounter(@PathVariable String name) {
         Integer counter = counterList.getByName(name);
         if (counter != -1)
@@ -47,7 +47,7 @@ public class CounterController {
                 .body(String.format("Счётчик %s не представлен в системе", name));
     }
 
-    @DeleteMapping("/{name}") //Перенести в тело?
+    @DeleteMapping("/counters/{name}")
     public ResponseEntity<String> deleteCounter(@PathVariable String name) {
         if (counterList.delByName(name))
             return ResponseEntity.status(HttpStatus.OK)
@@ -56,7 +56,7 @@ public class CounterController {
                 .body(String.format("Счётчик %s не представлен в системе", name));
     }
 
-    @GetMapping("/all/sum")
+    @GetMapping("/sum")
     public ResponseEntity<String> getSum() {
         Long sum = counterList.getSum();
         if (sum != -1)
@@ -66,8 +66,13 @@ public class CounterController {
                 .body("В системе ещё не представлены счётчики");
     }
 
-    @GetMapping("/all/names")
+    @GetMapping(path="/counters")
     public ResponseEntity<Set<String>> getNames() {
         return ResponseEntity.ok(counterList.getNames());
+    }
+
+    // Method for tests
+    public void clearCounterList() {
+        counterList.clearAll();
     }
 }
