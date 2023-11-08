@@ -1,4 +1,4 @@
-package com.sbt.models;
+package com.sbt.services;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +12,8 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 public class CounterList {
-    //TODO Заменить на Atomic?
-    private static final HashMap<String, Integer> counterList = new HashMap<>();
+
+    private HashMap<String, Integer> counterList = new HashMap<>();
 
     public boolean create(String name) {
         if (counterList.containsKey(name))
@@ -52,8 +52,9 @@ public class CounterList {
         return counterList.keySet();
     }
 
-    // Method for tests
-    public void clearAll() {
-        counterList.clear();
+
+    public void setCounterList(HashMap<String, Integer> counterList) {
+        this.counterList = counterList;
     }
+
 }

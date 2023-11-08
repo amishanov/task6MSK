@@ -1,6 +1,7 @@
 package com.sbt.controllers;
 
-import com.sbt.models.CounterList;
+import com.sbt.dto.Name;
+import com.sbt.services.CounterList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ import java.util.Set;
 @RestController
 //@RequestMapping("/counters")
 public class CounterController {
+    // Можно было бы вместо строк переводить найденную запись в мапе в нормальный объект Counter(name->count)
+    // и возвращать его
     final CounterList counterList;
 
     @Autowired
@@ -19,23 +22,25 @@ public class CounterController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createCounter(@RequestBody String name) {
-        if (counterList.create(name))
+    public ResponseEntity<String> createCounter(@RequestBody Name name) {
+        if (counterList.create(name.getName()))
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(String.format("Счётчик %s успешно создан", name));
+                    .body(String.format("Счётчик %s успешно создан", name.getName()));
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(String.format("Что-то пошло не так. Возможно счётчик %s уже присутствует в системе", name));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(String.format("Что-то пошло не так. Возможно счётчик %s уже присутствует в системе",
+                        name.getName()));
     }
 
     @PostMapping("/inc")
-    public  ResponseEntity<String>  incrementCounter(@RequestBody String name) {
-        if (counterList.incByName(name))
+    public ResponseEntity<String> incrementCounter(@RequestBody Name name) {
+        if (counterList.incByName(name.getName()))
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(String.format("Счётчик %s успешно обновлён", name));
+                    .body(String.format("Счётчик %s успешно обновлён", name.getName()));
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(String.format("Что-то пошло не так. Возможно счётчик %s не представлен в системе", name));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(String.format("Что-то пошло не так. Возможно счётчик %s не представлен в системе",
+                        name.getName()));
     }
 
     @GetMapping("/counters/{name}")
@@ -66,13 +71,9 @@ public class CounterController {
                 .body("В системе ещё не представлены счётчики");
     }
 
-    @GetMapping(path="/counters")
+    @GetMapping(path = "/counters")
     public ResponseEntity<Set<String>> getNames() {
         return ResponseEntity.ok(counterList.getNames());
     }
 
-    // Method for tests
-    public void clearCounterList() {
-        counterList.clearAll();
-    }
 }
