@@ -16,8 +16,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-//@SpringBootTest
-//@ExtendWith(SpringExtension.class)
 @WebMvcTest(CounterController.class)
 public class CounterControllerTest {
 
