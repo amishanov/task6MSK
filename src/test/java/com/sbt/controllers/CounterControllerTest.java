@@ -31,7 +31,7 @@ public class CounterControllerTest {
     public void testCreateIfCreated() throws Exception {
         Mockito.when(counterList.create("newCounter")).thenReturn(true);
         String json = "{\"name\": \"newCounter\"}";
-        mvc.perform(post("/create")
+        mvc.perform(post("/counters")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .content(json))
                 .andExpect(status().isCreated());
@@ -41,7 +41,7 @@ public class CounterControllerTest {
     public void testCreateIfBadRequest() throws Exception {
         Mockito.when(counterList.create("ExistingCounter")).thenReturn(false);
         String json = "{\"name\": \"ExistingCounter\"}";
-        mvc.perform(post("/create")
+        mvc.perform(post("/counters")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .content(json))
                 .andExpect(status().isBadRequest());
@@ -51,7 +51,7 @@ public class CounterControllerTest {
     public void testIncIfOk() throws Exception {
         Mockito.when(counterList.incByName("ExistingCounter")).thenReturn(true);
         String json = "{\"name\": \"ExistingCounter\"}";
-        mvc.perform(post("/inc")
+        mvc.perform(post("/counters/inc")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .content(json))
                 .andExpect(status().isOk());
@@ -61,7 +61,7 @@ public class CounterControllerTest {
     public void testIncIfBadRequest() throws Exception{
         Mockito.when(counterList.incByName("NonExistingCounter")).thenReturn(false);
         String json = "{\"name\": \"NonExistingCounter\"}";
-        mvc.perform(post("/inc")
+        mvc.perform(post("/counters/inc")
                         .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .content(json))
                 .andExpect(status().isNotFound());
@@ -98,14 +98,14 @@ public class CounterControllerTest {
     @Test
     public void testGetSumIfOk() throws Exception {
         Mockito.when(counterList.getSum()).thenReturn(1L);
-        mvc.perform(get("/sum"))
+        mvc.perform(get("/counters/aggregation/sum"))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testGetSumIfNotFound()throws Exception  {
         Mockito.when(counterList.getSum()).thenReturn(-1L);
-        mvc.perform(get("/sum"))
+        mvc.perform(get("/counters/aggregation/sum"))
                 .andExpect(status().isNotFound());
     }
 

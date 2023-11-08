@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-//@RequestMapping("/counters")
+@RequestMapping("/counters")
 public class CounterController {
     // Можно было бы вместо строк переводить найденную запись в мапе в нормальный объект Counter(name->count)
     // и возвращать его
@@ -21,7 +21,7 @@ public class CounterController {
         this.counterList = counterList;
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<String> createCounter(@RequestBody Name name) {
         if (counterList.create(name.getName()))
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -43,7 +43,7 @@ public class CounterController {
                         name.getName()));
     }
 
-    @GetMapping("/counters/{name}")
+    @GetMapping("/{name}")
     public ResponseEntity<String> getCounter(@PathVariable String name) {
         Integer counter = counterList.getByName(name);
         if (counter != -1)
@@ -52,7 +52,7 @@ public class CounterController {
                 .body(String.format("Счётчик %s не представлен в системе", name));
     }
 
-    @DeleteMapping("/counters/{name}")
+    @DeleteMapping("/{name}")
     public ResponseEntity<String> deleteCounter(@PathVariable String name) {
         if (counterList.delByName(name))
             return ResponseEntity.status(HttpStatus.OK)
@@ -61,7 +61,7 @@ public class CounterController {
                 .body(String.format("Счётчик %s не представлен в системе", name));
     }
 
-    @GetMapping("/sum")
+    @GetMapping("/aggregation/sum")
     public ResponseEntity<String> getSum() {
         Long sum = counterList.getSum();
         if (sum != -1)
@@ -71,7 +71,7 @@ public class CounterController {
                 .body("В системе ещё не представлены счётчики");
     }
 
-    @GetMapping(path = "/counters")
+    @GetMapping
     public ResponseEntity<Set<String>> getNames() {
         return ResponseEntity.ok(counterList.getNames());
     }
